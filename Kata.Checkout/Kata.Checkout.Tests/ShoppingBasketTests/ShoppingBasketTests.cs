@@ -36,7 +36,7 @@ namespace Kata.Checkout.Tests.ShoppingBasketTests
             Assert.Throws<ArgumentNullException>(() => basket.AddToBasket(null,6));
         }
 
-        [Test(Description = "Given AddToBasket When quantity is zero Then throw exception")]
+        [Test]
         public void GivenAddToBasketWhenQuantityIsZeroThenThrowException()
         {
             var itemA = _productService.GetBySku("A");
@@ -59,7 +59,6 @@ namespace Kata.Checkout.Tests.ShoppingBasketTests
             result.Count().Should().Be(1);
             result[0].Item.Should().BeEquivalentTo(itemA);
             result[0].Quantity.Should().Be(quantity);
-            _mockPricingEngine.Verify(a=>a.CalculateLineTotal(It.Is<CartItem>(b=>b.Item.Sku == itemA.Sku)),Times.Once);
         }
 
         [Test (Description = "Given many items are added When requesting basket Then items are returned correctly")]
@@ -81,18 +80,15 @@ namespace Kata.Checkout.Tests.ShoppingBasketTests
             result.Count().Should().Be(2);
             result[0].Item.Should().BeEquivalentTo(itemA);
             result[0].Quantity.Should().Be(quantity);
-            _mockPricingEngine.Verify(a => a.CalculateLineTotal(It.Is<CartItem>(b => b.Item.Sku == itemA.Sku)), Times.Once);
-
             result[1].Item.Should().BeEquivalentTo(itemB);
             result[1].Quantity.Should().Be(quantity1);
-            _mockPricingEngine.Verify(a => a.CalculateLineTotal(It.Is<CartItem>(b => b.Item.Sku == itemB.Sku)), Times.Once);
         }
 
         #endregion
 
         #region GetTotal
 
-        [Test]
+        [Test] 
         public void GivenMultipleItemsAreAddedToTheBasketThenTheBasketTotalShouldCalculateCorrectly()
         {
             var itemA = _productService.GetBySku("A");
@@ -114,7 +110,7 @@ namespace Kata.Checkout.Tests.ShoppingBasketTests
 
             var items = basket.GetBasket().ToList();
 
-            _mockPricingEngine.Verify(a => a.Calculate(items), Times.Once);
+            _mockPricingEngine.Verify(a=>a.Calculate(items),Times.Once);
             result.Should().Be(expectedTotal);
         }
 

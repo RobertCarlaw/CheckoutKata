@@ -9,10 +9,10 @@ namespace Kata.Checkout.Pricing
 {
     public class PricingEngine : IPricingEngine
     {
-        private readonly ISetPricePromotion _setPricePromotion;
-        public PricingEngine(ISetPricePromotion promotion)
+        private readonly IPromotionProvider _promotionProvider;
+        public PricingEngine(IPromotionProvider promotionProvider)
         {
-            _setPricePromotion = promotion;
+            _promotionProvider = promotionProvider;
         }
 
         public decimal Calculate(List<CartItem> cartItems)
@@ -36,13 +36,15 @@ namespace Kata.Checkout.Pricing
 
             decimal BaseCalculation(CartItem c) => c.Item.UnitPrice * c.Quantity;
 
-            if (cartItem.Item.Sku == "B")
+            var promotion = _promotionProvider.Find(cartItem);
+
+            if (promotion == null)
             {
-                _setPricePromotion.Apply(cartItem, BaseCalculation);
+                cartItem.SetLineTotal(BaseCalculation(cartItem));
             }
             else
             {
-                cartItem.SetLineTotal(BaseCalculation(cartItem));
+                promotion.Apply(cartItem, BaseCalculation);
             }
         }
     }

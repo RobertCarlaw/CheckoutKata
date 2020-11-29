@@ -1,10 +1,10 @@
 ﻿using System;
 using Kata.Checkout.Models;
 
-namespace Kata.Checkout.Promotions
+namespace Kata.Checkout.Promotions.PromotionTypes
 {
     // 3 for £40
-    public class QuantityForSetPricePromotion : ISetPricePromotion
+    public class QuantityForSetPricePromotion : IPromotion
     {
         private int _quantityDiscountApplied;
         private decimal _discountedPrice;

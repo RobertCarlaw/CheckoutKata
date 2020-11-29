@@ -1,9 +1,9 @@
 ﻿using System;
 using Kata.Checkout.Models;
 
-namespace Kata.Checkout.Promotions
+namespace Kata.Checkout.Promotions.PromotionTypes
 {
-    public interface ISetPricePromotion
+    public interface IPromotion
     {
         string Name { get; }
         void Apply(CartItem item, Func<CartItem, decimal> totalBaseCalculation);

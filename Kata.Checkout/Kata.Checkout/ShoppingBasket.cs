@@ -3,12 +3,19 @@ using Kata.Checkout.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Kata.Checkout.Helpers;
+using Kata.Checkout.Pricing;
 
 namespace Kata.Checkout
 {
     public class ShoppingBasket : IShoppingBasket
     {
+        private readonly IPricingEngine _pricingEngine;
         private readonly List<CartItem> _items = new List<CartItem>();
+
+        public ShoppingBasket(IPricingEngine pricingEngine)
+        {
+            _pricingEngine = pricingEngine;
+        }
 
         public void AddToBasket(Item item, int quantity)
         {
@@ -22,7 +29,8 @@ namespace Kata.Checkout
             }
 
             var cartItem = new CartItem(item, quantity);
-            cartItem.SetLineTotal(cartItem.Item.UnitPrice * cartItem.Quantity);
+            _pricingEngine.CalculateLineTotal(cartItem);
+
             _items.Add(cartItem);
         }
 
@@ -32,7 +40,7 @@ namespace Kata.Checkout
         }
         public decimal TotalPrice()
         {
-            return PricingHelper.RoundPrice(_items.Sum(a => a.LineTotal));
+            return _pricingEngine.Calculate(_items);
         }
     }
 }
